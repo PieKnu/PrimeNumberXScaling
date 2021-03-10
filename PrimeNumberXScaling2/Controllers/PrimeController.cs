@@ -23,8 +23,9 @@ namespace LoadBalancer.Controllers
         [Route("isPrime")]
         public IsPrimeEntity isPrime(int number)
         {
-            Console.WriteLine("2");
-            Console.WriteLine(number);
+            //Make the project slower
+            Thread.Sleep(5000);
+
 
             int m;
             int n = number;
@@ -55,10 +56,8 @@ namespace LoadBalancer.Controllers
         [Route("getPrimes")]
         public Entity GetPrimes(int startInt, int endInt)
         {
-            Console.WriteLine("2");
-            Console.WriteLine(startInt);
-            Console.WriteLine(endInt);
-
+            //Make the project slower
+            Thread.Sleep(5000);
 
             //Creates the list to fill the prime numbers into
             List<int> primeNumbers = new List<int>();

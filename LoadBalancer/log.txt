@@ -1,0 +1,30 @@
+
+Log Entry : InstanceId: 2
+Prime Variance Values: 1 - 20
+Time taken: 00:00:05.05
+Date: 10/03/2021 11.44.47
+Prime Numbers: 
+  : 1
+  : 2
+  : 3
+  : 5
+  : 7
+  : 11
+  : 13
+  : 17
+  : 19
+
+Log Entry : InstanceId: 1
+Prime Variance Values: 1 - 20
+Time taken: 00:00:05.05
+Date: 10/03/2021 11.44.49
+Prime Numbers: 
+  : 1
+  : 2
+  : 3
+  : 5
+  : 7
+  : 11
+  : 13
+  : 17
+  : 19

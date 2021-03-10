@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 using RestSharp;
 using System.IO;
-
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace LoadBalancer.Controllers
 {
@@ -15,13 +16,16 @@ namespace LoadBalancer.Controllers
     public class LoadBalancerController : ControllerBase
     {
 
-        public LoadBalancerController(ILoadBalanceStrategy strategy)
+        private ILoadBalanceStrategy _Strategy;
+        private readonly ILogger<LoadBalancerController> _logger;
+
+        public LoadBalancerController(ILogger<LoadBalancerController> logger, ILoadBalanceStrategy strategy)
         {
+            _logger = logger;
             _Strategy = strategy;
         }
 
-        private ILoadBalanceStrategy _Strategy;
-
+        
 
         [HttpGet]
         [Route("isPrime")]
@@ -34,7 +38,31 @@ namespace LoadBalancer.Controllers
         [Route("getPrimes")]
         public Entity GetPrimes(int startInt, int endInt)
         {
-            return LoadBalanceAsyncPrimes(startInt, endInt).Result;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var result = LoadBalanceAsyncPrimes(startInt, endInt).Result;
+            sw.Stop();
+
+            TimeSpan ts = sw.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            ts.Hours, ts.Minutes, ts.Seconds,
+            ts.Milliseconds / 10);
+
+            // Start of logging.
+            string path = "log.txt";
+            if (!System.IO.File.Exists(path))
+            {
+                // Create a file to write to.
+                var log = System.IO.File.CreateText(path);
+                log.Close();
+            }
+
+            using (StreamWriter w = System.IO.File.AppendText("log.txt"))
+            {
+                Log(result, w, startInt, endInt, elapsedTime );
+            }
+
+            return result;
         }
 
         private async Task<Entity> LoadBalanceAsyncPrimes(int startInt, int endInt)
@@ -69,6 +97,21 @@ namespace LoadBalancer.Controllers
 
             return response.Data;
         }
+        public static void Log(Entity entity, TextWriter w, int startInt, int endInt, String elapsedTime)
+        {
+            w.Write("\r\nLog Entry : ");
+            w.WriteLine($"InstanceId: {entity.InstanceId}");
+            w.WriteLine($"Prime Variance Values: {startInt} - {endInt}");
+            w.WriteLine($"Time taken: {elapsedTime}");
+            w.WriteLine($"Date: {entity.Time}");
 
+            var primeArray = entity.Numbers.ToArray();
+            w.WriteLine($"Prime Numbers: ");
+
+            for (int i = 0; i < primeArray.Length; i++)
+            {
+                w.WriteLine($"  : {primeArray[i]}");
+            }
+        }
     }
 }

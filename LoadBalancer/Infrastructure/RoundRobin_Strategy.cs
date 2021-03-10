@@ -14,26 +14,19 @@ namespace LoadBalancer.Infrastructure
         };
 
         private static int index = 0;
+        private static int arrayLength = Urls.Length;
 
-
-        public string BalanceUrl(string option)
+        public string BalanceUrl()
         {
-            var url = Urls[index % 2];
             index++;
 
-            if (index == 2)
+            if (index == arrayLength)
             {
-                index = 1;
+                index = 0;
             }
 
-            if (option == "isPrime")
-            {
-                url = url + "/isPrime?";
-            }
-            else
-            {
-                url = url + "/getPrimes?";
-            }
+            var url = Urls[index];
+
             return url;
         }
     }

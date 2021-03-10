@@ -39,48 +39,33 @@ namespace LoadBalancer.Controllers
 
         private async Task<Entity> LoadBalanceAsyncPrimes(int startInt, int endInt)
         {
-            Console.WriteLine("Balance - Get Primes");
-            Console.WriteLine(startInt);
-            Console.WriteLine(endInt);
-
             //Set up the client 
-            HttpClient _client = new HttpClient();
+            RestClient c = new RestClient();
 
-            var path = _Strategy.BalanceUrl("getPrimes");
+            c.BaseUrl = new Uri(_Strategy.BalanceUrl() + "/getPrimes");
 
             //Create the request
-            path = path + "?startInt=" + startInt + "&endInt=" + endInt;
-            //var request = new RestRequest(Method.GET);
-            //request.AddParameter("startInt", startInt);
-            //request.AddParameter("endInt", endInt);
+            var request = new RestRequest(Method.GET);
+            request.AddParameter("startInt", startInt);
+            request.AddParameter("endInt", endInt);
 
             //Wait for the response
-            //var response = await c.ExecuteAsync<Entity>(request);
+            var response = await c.ExecuteAsync<Entity>(request);
 
-            var response = _client.GetAsync(path);
-
-            var result = (response.Result.Content.ReadAsStringAsync().Result);
-
-            Console.WriteLine(result);
-
-            return null;
+            return response.Data;
         }
         private async Task<IsPrimeEntity> LoadBalanceAsyncIsPrime(int number)
         {
-            Console.WriteLine("Balance - isPrime");
-            Console.WriteLine(number);
-
+            //Set up the client 
             RestClient c = new RestClient();
-            c.BaseUrl = new Uri(_Strategy.BalanceUrl("isPrime"));
+            c.BaseUrl = new Uri(_Strategy.BalanceUrl() + "/isPrime");
 
-            Console.WriteLine(c.BaseUrl);
-
+            //Create the request
             var request = new RestRequest(Method.GET);
-
             request.AddParameter("number", number);
 
+            //Wait for the response
             var response = await c.ExecuteAsync<IsPrimeEntity>(request);
-            Console.WriteLine(response.Data);
 
             return response.Data;
         }

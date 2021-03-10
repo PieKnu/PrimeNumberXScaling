@@ -7,6 +7,6 @@ namespace LoadBalancer.Infrastructure
 {
     public interface ILoadBalanceStrategy
     {
-        string BalanceUrl(string option);
+        string BalanceUrl();
     }
 }
